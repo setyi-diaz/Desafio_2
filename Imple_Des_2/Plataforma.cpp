@@ -114,61 +114,109 @@ Usuario* Plataforma::iniciarSesion(){
 }
 
 void Plataforma::reproducirAleatoria(Usuario* user){
-    short int opcion1=2;
-    short int opcion2=3;
-    do{
-        Cancion* cancionActual=nullptr;
-        while(opcion1==2 || opcion2==3){
+    Cancion* historial[4] = {nullptr, nullptr, nullptr, nullptr};
+    short totalHistorial = 0;
+    short indiceActual = -1;
+    bool salir=false;
+    bool previa=false;
+    char tecla='';
+    char opcion;
+    Cancion* cancionActual=nullptr;
 
-            cancionActual = &seleccionarCancionAleatoria();
-            unsigned int idArt = buscarArtista(*cancionActual);
-            if(idArt != 99999)
-                cout<<"Cantante: "<<idArt<<endl;
-            else if (idArt == 99999){
-                cout<<"Cantante: "<<"No encontrado";<<endl;
-            }
-            const Album* albumPtr = buscarAlbum(*cancionActual,idArt);
-            if (albumPtr != nullptr){
-                cout<<"Album: "<<albumPtr->getNombre()<<endl;
-                cout<<"Ruta a la portada del album: "<<albumPtr->getPortada()<<endl;
-                cout<<"Nombre Cancion: "<<cancionActual.getNombre()<<endl;
-            }
-            else if(albumPtr == nullptr){
-                cout<<"Album: "<<"No encontrado"<<endl;
-                cout<<"Ruta a la portada del album: "<<"No encotrada"<<endl;
-                cout<<"Nombre Cancion: "<<cancionActual.getNombre()<<endl;
-            }
-            if (user->getTipo()=="estandar"){
-                cout<<"Ruta archivo de audio: "<<cancionActual.getRuta128()<<endl;
-                cout<<"Duracion "<<cancionActual.getDuracion()<<endl;
-            }
-            else if (user->getTipo()=="premium"){
-                cout<<"Ruta archivo de audio: "<<cancionActual.getRuta320()<<endl;
-                cout<<"Duracion "<<cancionActual.getDuracion()<<endl;
-            }
-            if(user->getTipo()=="estandar"){
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout<<"1.Detener"<<"     "<<"2.Reproducir"<<"      "<<"3.Siguiente"<<endl;
-                cout<<"4.Previa";
-                cin>>opcion2;
-            }
-            else if(user->getTipo()=="premium"){
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout<<"1.Detener"<<"     "<<"2.Reproducir"<<"      "<<"0.Salir del reproductor";
-                cin>>opcion1;
-            }
-            if (opcion1 == 2 || opcion2 == 2){std::this_thread::sleep_for(std::chrono::seconds(3));}
+    while(salir==false){
+        if(previa==true){
+            cancionActual = historial[indiceActual];
+            previa = false;
         }
-        cout<<"Reproduccion detenida";
-        cout<<"2.Reproducir"<<"      "<<"0.Salir del reproductor";
-        cin>>opcion1;
+        else{
+            cancionActual = seleccionarCancionAleatoria();
+        }
+        unsigned int idArt = buscarArtista(*cancionActual);
+        if(idArt != 99999)
+            cout<<"Cantante: "<<idArt<<endl;
+        else if (idArt == 99999){
+            cout<<"Cantante: No encontrado"<<endl;
+        }
+        const Album* albumPtr = buscarAlbum(*cancionActual,idArt);
+        if (albumPtr != nullptr){
+            cout<<"Album: "<<albumPtr->getNombre()<<endl;
+            cout<<"Ruta a la portada del album: "<<albumPtr->getPortada()<<endl;
+            cout<<"Nombre Cancion: "<<cancionActual->getNombre()<<endl;
+        }
+        else if(albumPtr == nullptr){
+            cout<<"Album: "<<"No encontrado"<<endl;
+            cout<<"Ruta a la portada del album: "<<"No encotrada"<<endl;
+            cout<<"Nombre Cancion: "<<cancionActual->getNombre()<<endl;
+        }
+        if (user->getTipo()=="estandar"){
+            cout<<"Ruta archivo de audio: "<<cancionActual.getRuta128()<<endl;
+            cout<<"Duracion "<<cancionActual.getDuracion()<<endl;
+        }
+        else if (user->getTipo()=="premium"){
+            cout<<"Ruta archivo de audio: "<<cancionActual.getRuta320()<<endl;
+            cout<<"Duracion "<<cancionActual.getDuracion()<<endl;
+        }
+        if(user->getTipo()=="premium"){
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout<<"\n1.Detener    2.Continuar   3.Siguiente   4.Previa"<<endl;
 
-    }while(opcion1!=0);
+            if (_kbhit()) {
+                tecla = _getch();
+                if (tecla == '1') {
+                    cout<<"\n\n\n============================================================";
+                    cout<<"\n                   Reproduccion detenida";
+                    cout<<"\n============================================================";
+                    cout<<"\n2.Continuar    3.Siguiente   4.Previa    0.Salir del reproductor";
+                    cin>>opcion;
+                    if (opcion=='0'){
+                        salir=true;
+                    }
+                    else if (opcion=='4'){
+                        if (indiceActual > 0)
+                            indiceActual--;
+                        else
+                            cout << "Ya estás en la primera canción del historial.\n";
+                        previa=true;
+                    }
+                }
+            }
+        }
+        else if(user->getTipo()=="estandar"){
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout<<"\n1.Detener    2.Continuar   0.Salir del reproductor";
+            if (_kbhit()) {
+                tecla = _getch();
+                if (tecla == '1') {
+                    cout<<"============================================================";
+                    cout<<"                   Reproduccion detenida";
+                    cout<<"============================================================";
+                    cout<<"2.Continuar    0.Salir del reproductor";
+                    cin>>opcion;
+                    if (opcion=='0'){
+                        salir=true;
+                    }
+                }
+            }
+        }
+        if(opcion=='2'){std::this_thread::sleep_for(std::chrono::seconds(5));}
+        if (!previa) {
+            if (totalHistorial == 4) {
+                for (int i = 0; i < 3; i++)
+                    historial[i] = historial[i + 1];
+                historial[3] = cancionActual;
+            } else {
+                historial[totalHistorial] = cancionActual;
+                totalHistorial++;
+            }
+            indiceActual = totalHistorial - 1;
+        }
+    }
+
 }
 unsigned int Plataforma::buscarArtista(Cancion* play ){
-    int idArtista = (play.getIdCancion())/1000;
+    int idArtista = (play->getIdCancion())/1000;
 
     for (int i = 0; i < contArtistas; i++){
         if (artistas[i].getIdArtista()==idArtista){
@@ -177,7 +225,7 @@ unsigned int Plataforma::buscarArtista(Cancion* play ){
     }
     return 99999;
 }
-const Album* Plataforma::buscarAlbum(const Cancion& play, int id){
+const Album* Plataforma::buscarAlbum(Cancion* play, int id){
     unsigned short idAlbum = (play->getIdCancion()/100)%100;;
     const Album* const* albums = artistas[id].getAlbumesPtr();
     int cantAlbums=artistas[id].getCantAlbumes();
@@ -188,12 +236,12 @@ const Album* Plataforma::buscarAlbum(const Cancion& play, int id){
     }
     return nullptr;
 }
-const Cancion Plataforma::seleccionarCancionAleatoria(){
+const Cancion* Plataforma::seleccionarCancionAleatoria(){
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dist(0, 10000);
+    std::uniform_int_distribution<int> dist(0, contCanciones);
     int ind = dist(gen);
-    return Canciones[ind];
+    return &Canciones[ind];
 }
 
 

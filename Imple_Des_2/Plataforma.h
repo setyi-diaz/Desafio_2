@@ -2,7 +2,7 @@
 #define PLATAFORMA_H
 
 #include <iostream>
-#include <limits>
+#include <conio.h>
 #include <fstream>
 #include <random>
 #include <chrono>
@@ -32,8 +32,8 @@ private:
     bool cargarAnuncios();
     Cancion* seleccionarCancionAleatoria();
     Anuncio* seleccionarAnuncioAleatorio();
-    int buscarArtista(Cancion&);
-    Album* buscarAlbum(Cancion& , int);
+    unsigned int buscarArtista(Cancion* );
+    const Album* buscarAlbum(Cancion* play, int id);
 public:
     //constructor predeterminado
     Plataforma(Usuario* = nullptr,Artista* = nullptr,
@@ -47,9 +47,6 @@ public:
     void menuFavoritos(Usuario* user);
     void mostrarEstadisticas();
     void liberarMemoria();
-private:
-
-    //sobre cargar operador !
 };
 
 #endif // PLATAFORMA_H
