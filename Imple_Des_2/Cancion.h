@@ -5,30 +5,29 @@
 using std::string;
 
 class Credito;  //declaracion anticipada
-class Album;
 
 class Cancion
 {
 public:
-    Cancion(unsigned short = 0,
-            string = "",
-            float  duracion = 0,
-            string rutaAudio128 = "",
-            string rutaAudio320 = "",
-            Credito* = nullptr,
-            int = 0,
-            Album* = nullptr);
-    unsigned short getIdCancion();
-
+    Cancion(unsigned short = 0, string = "", float  = 0.0, string  = "",
+            string  = "", string  = "", Credito& = nullptr,
+            Credito& = nullptr, Credito& = nullptr, int = 0);
+    unsigned short getIdCancion() const;
+    string getNombre()const;
+    string getRuta128()const;
+    string getRuta320()const;
+    float getDuracion()const;
 private:
     unsigned short idCancion;
     string nombre;
     float  duracion;
     string rutaAudio128;
     string rutaAudio320;
-    Credito *creditos;
+    string rutaPortadaAlbum;
+    Credito& productores;
+    Credito& musicos;
+    Credito& compositores;
     int vecesReproducida;
-    Album *suAlbum;
 };
 
 #endif // CANCION_H

@@ -7,21 +7,21 @@ using std::string;
 class Album
 {
 public:
-    Album(string [4]= {"","","",""},string = "",string = "",string = "",string = "",
-          unsigned short = 0,unsigned short = 0,unsigned short = 0);
-    unsigned short getIdAlbum();
+    Album(unsigned short = 0,string = "",string = "" ,
+          string = "" ,string = "",unsigned short = 0,unsigned short = 0,string [4] ={"","","",""} ,const Cancion & = nullptr);
+    unsigned short getIdAlbum()const;
+    string getNombre()const;
+    string getPortada()const;
 private:
-    string generos[4];
+    unsigned short idAlbum;
     string fechaLanzamiento;
     string nombre;
-    string sello;
+    string selloDisco;
     string portada;
     unsigned short puntuacion;
     unsigned short duracion;
-    unsigned short idAlbum;
-    Cancion* cancionesAlbum;
-
-
+    string generos[4];
+    Cancion& cancionesRef;
 };
 
 #endif // ALBUM_H

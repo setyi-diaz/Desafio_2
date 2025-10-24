@@ -1,16 +1,22 @@
 #include "Album.h"
 
-Album::Album(string g[4],string f,string n,string s,string por,
-             unsigned short d,unsigned short id,unsigned short pun) {
-    generos[4]=g;
-    fechaLanzamiento=f;
-    nombre=n;
-    sello=s;
-    portada=por;
-    puntuacion=pun;
-    duracion=d;
-    idAlbum=id;
+Album::Album(unsigned short codId,string gen[4]  ,string fecha,string name ,
+             string sello ,string port,unsigned short punt,unsigned short dur, const Cancion & ) {
+    idAlbum=codId;
+    generos[4]=gen;
+    fechaLanzamiento=fecha;
+    nombre=name;
+    selloDisco=sello;
+    portada=port;
+    puntuacion=punt;
+    duracion=dur;
 }
 unsigned short Album::getIdAlbum(){
     return idAlbum;
+}
+string Album::getNombre()const{
+    return nombre;
+}
+string Album::getPortada()const{
+    return portada;
 }

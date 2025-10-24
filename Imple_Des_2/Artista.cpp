@@ -1,11 +1,22 @@
 #include "Artista.h"
 
-Artista::Artista(Album* A) {
-    albumes = A;
+Artista::Artista(int id,unsigned short ed,string pais,int segui,int pos, Album** album, int cant):albumesPtr(album) {
+    idArtista = id;
+    edad = ed;
+    paisOrigen = pais;
+    cantSeguidores = segui;
+    posTendencia = pos;
+    cantAlbumPtr = cant;
 }
-Album* Artista::getAlbumes(){
-    return albumes;
+const Album* const* Artista::getAlbumesPtr() const {
+    return albumesPtr;
 }
-short int Artista::getIdArtista(){
+int Artista::getIdArtista() const{
     return idArtista;
+}
+int Artista::getCantAlbumes() const{
+    return cantAlbumPtr;
+}
+void Artista::imprimir()const{
+    cout<<"Cantante: "<<idArtista
 }

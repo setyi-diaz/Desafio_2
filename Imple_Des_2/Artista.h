@@ -1,23 +1,27 @@
 #ifndef ARTISTA_H
 #define ARTISTA_H
-#include <Album.h>
+
 #include <string>
 using std::string;
+class Album;
 
 class Artista
 {
 
 public:
-    Artista(short int = 0,short int = 0,short int = 0,short int = 0,string = "", Album* = nullptr);
-    Album* getAlbumes();
-    short int getIdArtista();
+    Artista(int = 0,unsigned short = 0,string = "",int = 0,unsigned short = 0, Album** = nullptr,int = 0);
+    const Album* const* getAlbumesPtr() const;
+    short int getIdArtista() const;
+    int getCantAlbumes()const;
+    void imprimir()const;
 private:
-    short int idArtista;
-    short int edad;
-    short int cantSeguidores;
-    short int posTendencia;
-    string pais;
-    Album* albumes;
+    int idArtista;
+    unsigned short edad;
+    string paisOrigen;
+    int cantSeguidores;
+    unsigned short posTendencia;
+    Album** albumesPtr;
+    int cantAlbumPtr;
 
 };
 
